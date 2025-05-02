@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo Institucional - CSS Panamá</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Estilos adicionales */
+        .transition-all {
+            transition: all 0.3s ease;
+        }
+        .item-card:hover {
+            transform: translateY(-3px);
+        }
+        .bg-hero {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+        }
+        .search-input:focus {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
+        @media print {
+            .no-print {
+                display: none;
+            }
+            .print-only {
+                display: block;
+            }
+        }
+        .print-only {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 flex flex-col min-h-screen">
+    <!-- Header -->
+    <header class="bg-blue-600 text-white shadow-md no-print">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-building text-2xl"></i>
+                <div>
+                    <h1 class="text-xl font-bold">Catálogo Institucional</h1>
+                    <p class="text-xs text-blue-100">Caja de Seguro Social de Panamá</p>
+                </div>
+            </div>
+            
+            <!-- Botón de menú móvil -->
+            <button 
+                id="menuToggle"
+                class="lg:hidden p-2 rounded-md hover:bg-blue-700"
+            >
+                <i class="fas fa-bars" id="menuIcon"></i>
+            </button>
+            
+            <!-- Menú de navegación para escritorio -->
+            <nav class="hidden lg:flex items-center space-x-6">
+                <a href="#" class="hover:underline font-medium flex items-center gap-1">
+                    <i class="fas fa-home text-sm"></i> Inicio
+                </a>
+                <a href="#" class="hover:underline font-medium flex items-center gap-1">
+                    <i class="fas fa-book text-sm"></i> Catálogo
+                </a>
+                <a href="#" class="hover:underline font-medium flex items-center gap-1">
+                    <i class="fas fa-info-circle text-sm"></i> Acerca de
+                </a>
+                <a href="#" class="hover:underline font-medium flex items-center gap-1">
+                    <i class="fas fa-users text-sm"></i> Contacto
+                </a>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- Menú móvil -->
+    <div id="mobileMenu" class="lg:hidden bg-blue-500 text-white hidden no-print">
+        <div class="container mx-auto px-4 py-2">
+            <nav class="flex flex-col space-y-3">
+                <a href="#" class="p-2 hover:bg-blue-600 rounded flex items-center gap-2">
+                    <i class="fas fa-home"></i> Inicio
+                </a>
+                <a href="#" class="p-2 hover:bg-blue-600 rounded flex items-center gap-2">
+                    <i class="fas fa-book"></i> Catálogo
+                </a>
+                <a href="#" class="p-2 hover:bg-blue-600 rounded flex items-center gap-2">
+                    <i class="fas fa-info-circle"></i> Acerca de
+                </a>
+                <a href="#" class="p-2 hover:bg-blue-600 rounded flex items-center gap-2">
+                    <i class="fas fa-users"></i> Contacto
+                </a>
+            </nav>
+        </div>
+    </div>
+    
+    <!-- Hero section -->
+    <section class="bg-hero text-white py-12 no-print">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-4">Catálogo Institucional Digital</h2>
+            <p class="mb-8 max-w-2xl mx-auto">Accede a información detallada sobre medicamentos, insumos, equipos y servicios disponibles en la Caja de Seguro Social de Panamá.</p>
+            
+            <!-- Barra de búsqueda -->
+            <div class="relative max-w-xl mx-auto">
+                <input
+                    id="searchInput"
+                    type="text"
+                    placeholder="Buscar por nombre o código..."
+                    class="w-full px-4 py-3 pl-12 rounded-lg text-gray-800 focus:outline-none search-input"
+                >
+                <i class="fas fa-search absolute left-4 top-4 text-gray-500"></i>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Título para impresión -->
+    <div class="print-only text-center py-6">
+        <h1 class="text-2xl font-bold">Catálogo Institucional</h1>
+        <p>Caja de Seguro Social de Panamá</p>
+        <hr class="my-4">
+    </div>
+    
+    <!-- Main content -->
+    <main class="container mx-auto px-4 py-8 flex-grow">
+        <div class="flex flex-col lg:flex-row gap-6">
+            <!-- Sidebar -->
+            <aside class="lg:w-1/4 bg-white p-4 rounded-lg shadow no-print">
+                <h3 class="font-bold text-lg mb-4 text-gray-700">Categorías</h3>
+                <ul id="categoriesList">
+                    <!-- Las categorías se cargarán aquí dinámicamente -->
+                </ul>
+                
+                <div class="border-t border-gray-200 my-4 pt-4">
+                    <h3 class="font-bold text-lg mb-3 text-gray-700">Recursos</h3>
+                    <ul class="space-y-2">
+                        <li>
+                            <a href="#" onclick="printCatalog()" class="flex items-center gap-2 text-blue-600 hover:underline">
+                                <i class="fas fa-print"></i> Imprimir catálogo
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" onclick="exportToCSV()" class="flex items-center gap-2 text-blue-600 hover:underline">
+                                <i class="fas fa-download"></i> Exportar a CSV
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+            
+            <!-- Content -->
+            <div class="lg:w-3/4">
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 id="currentCategory" class="text-2xl font-bold text-gray-800">
+                            Todos los artículos
+                        </h2>
+                        <span id="itemCount" class="text-gray-500 text-sm">0 artículos</span>
+                    </div>
+                    
+                    <div id="itemsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Los elementos se cargarán aquí dinámicamente -->
+                    </div>
+                    
+                    <div id="noResults" class="text-center py-12 hidden">
+                        <p class="text-gray-500">No se encontraron artículos que coincidan con tu búsqueda.</p>
+                        <button 
+                            id="clearFilters"
+                            class="mt-4 text-blue-600 hover:underline"
+                        >
+                            Limpiar filtros
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Modal de detalles -->
+    <div id="detailsModal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50 hidden no-print">
+        <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4">
+            <div class="p-6">
+                <div class="flex justify-between items-start mb-4">
+                    <h3 id="modalTitle" class="text-xl font-bold text-gray-800"></h3>
+                    <button id="closeModal" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <div id="modalContent" class="space-y-4">
+                    <!-- El contenido del modal se cargará aquí dinámicamente -->
+                </div>
+                <div class="mt-6 pt-4 border-t border-gray-200 flex justify-end">
+                    <button id="closeModalBtn" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-300 py-8 no-print">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Catálogo Institucional</h4>
+                    <p class="text-sm">Sistema centralizado de información sobre medicamentos, insumos, equipos y servicios disponibles en la Caja de Seguro Social de Panamá.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Enlaces rápidos</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="hover:text-white">Inicio</a></li>
+                        <li><a href="#" class="hover:text-white">Catálogo completo</a></li>
+                        <li><a href="#" class="hover:text-white">Preguntas frecuentes</a></li>
+                        <li><a href="#" class="hover:text-white">Contacto</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Contacto</h4>
+                    <address class="not-italic text-sm">
+                        <p>Caja de Seguro Social</p>
+                        <p>Ciudad de Panamá, Panamá</p>
+                        <p class="mt-2">Email: catalogo@css.gob.pa</p>
+                        <p>Teléfono: +507 123-4567</p>
+                    </address>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-6 text-center text-sm">
+                <p>&copy; <span id="currentYear"></span> Caja de Seguro Social de Panamá. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ===== DATOS DEL CATÁLOGO =====
+        // AQUÍ PUEDES EDITAR LOS DATOS DE TU CATÁLOGO
+        
+        // Categorías disponibles
+        const categories = [
+            { id: 'todos', name: 'Todos los artículos', icon: 'fa-th-large' },
+            { id: 'medicamentos', name: 'Medicamentos', icon: 'fa-pills' },
+            { id: 'insumos', name: 'Insumos Médicos', icon: 'fa-first-aid' },
+            { id: 'equipos', name: 'Equipos', icon: 'fa-laptop-medical' },
+            { id: 'servicios', name: 'Servicios', icon: 'fa-user-md' },
+        ];
+        
+        // Artículos del catálogo
+        const catalogItems = [
+            { 
+                id: 1, 
+                name: 'Acetaminofén 500mg', 
+                category: 'medicamentos', 
+                code: 'M001', 
+                description: 'Tabletas analgésicas y antipiréticas', 
+                details: {
+                    presentacion: 'Tabletas de 500mg',
+                    indicaciones: 'Alivio del dolor leve a moderado y reducción de la fiebre',
+                    contraindicaciones: 'Hipersensibilidad al acetaminofén, enfermedad hepática grave',
+                    dosificacion: 'Adultos: 1-2 tabletas cada 4-6 horas según sea necesario, sin exceder 8 tabletas en 24 horas'
+                }
+            },
+            { 
+                id: 2, 
+                name: 'Jeringa desechable 5ml', 
+                category: 'insumos', 
+                code: 'I054', 
+                description: 'Jeringa estéril de un solo uso',
+                details: {
+                    material: 'Polipropileno grado médico',
+                    esterilizacion: 'Óxido de etileno',
+                    presentacion: 'Empaque individual estéril',
+                    uso: 'Administración de medicamentos e irrigación'
+                }
+            },
+            { 
+                id: 3, 
+                name: 'Monitor de signos vitales', 
+                category: 'equipos', 
+                code: 'E023', 
+                description: 'Equipo para monitoreo de pacientes',
+                details: {
+                    funciones: 'Monitoreo de presión arterial, pulso, saturación de oxígeno y temperatura',
+                    pantalla: 'LCD a color de 10.4 pulgadas',
+                    alarmas: 'Visuales y auditivas programables',
+                    conectividad: 'Puerto USB, conexión a red hospitalaria',
+                    bateria: 'Autonomía de hasta 4 horas'
+                }
+            },
+            { 
+                id: 4, 
+                name: 'Consulta especializada', 
+                category: 'servicios', 
+                code: 'S115', 
+                description: 'Atención por médico especialista',
+                details: {
+                    especialidades: 'Cardiología, Neurología, Gastroenterología, Neumología, etc.',
+                    duracion: 'Aproximadamente 30 minutos',
+                    requisitos: 'Referencia médica de médico general',
+                    ubicacion: 'Consulta externa de especialidades'
+                }
+            },
+            { 
+                id: 5, 
+                name: 'Ibuprofeno 400mg', 
+                category: 'medicamentos', 
+                code: 'M032', 
+                description: 'Tabletas antiinflamatorias',
+                details: {
+                    presentacion: 'Tabletas recubiertas de 400mg',
+                    indicaciones: 'Dolor, inflamación y fiebre',
+                    contraindicaciones: 'Úlcera péptica activa, asma sensible a AINEs, último trimestre del embarazo',
+                    dosificacion: 'Adultos: 1 tableta cada 8 horas después de las comidas'
+                }
+            },
+            { 
+                id: 6, 
+                name: 'Catéter intravenoso 18G', 
+                category: 'insumos', 
+                code: 'I078', 
+                description: 'Para administración de medicamentos por vía IV',
+                details: {
+                    calibre: '18G (verde)',
+                    material: 'Poliuretano con tratamiento antimicrobiano',
+                    longitud: '45mm',
+                    esterilizacion: 'Radiación gamma',
+                    caracteristicas: 'Con puerto de inyección y sistema de seguridad'
+                }
+            },
+            { 
+                id: 7, 
+                name: 'Desfibrilador automático', 
+                category: 'equipos', 
+                code: 'E045', 
+                description: 'Equipo para reanimación cardiopulmonar',
+                details: {
+                    tipo: 'Desfibrilador externo automático (DEA)',
+                    energia: 'Bifásica, ajustable 150-360 Joules',
+                    pantalla: 'LCD de 5.7 pulgadas a color',
+                    peso: '6.7 kg con batería',
+                    bateria: 'Autonomía para 200 descargas',
+                    caracteristicas: 'Instrucciones por voz, análisis automático del ritmo cardíaco'
+                }
+            },
+            { 
+                id: 8, 
+                name: 'Cirugía ambulatoria', 
+                category: 'servicios', 
+                code: 'S204', 
+                description: 'Procedimientos quirúrgicos sin hospitalización',
+                details: {
+                    tipos: 'Endoscopias, biopsias, extracciones, procedimientos dermatológicos',
+                    duracion: 'Variable según procedimiento (1-3 horas)',
+                    anestesia: 'Local o sedación consciente según caso',
+                    recuperacion: 'Sala de recuperación post-anestésica (1-2 horas)'
+                }
+            },
+            { 
+                id: 9, 
+                name: 'Metformina 850mg', 
+                category: 'medicamentos', 
+                code: 'M056', 
+                description: 'Tabletas hipoglucemiantes orales',
+                details: {
+                    presentacion: 'Tabletas de 850mg',
+                    indicaciones: 'Diabetes mellitus tipo 2',
+                    contraindicaciones: 'Insuficiencia renal, acidosis metabólica, hipersensibilidad',
+                    dosificacion: 'Iniciar con 500-850mg una vez al día, aumentar gradualmente hasta 850mg 2-3 veces al día'
+                }
+            },
+            { 
+                id: 10, 
+                name: 'Estetoscopio adulto', 
+                category: 'insumos', 
+                code: 'I103', 
+                description: 'Para auscultación cardíaca y pulmonar',
+                details: {
+                    tipo: 'Doble campana (diafragma y campana)',
+                    material: 'Acero inoxidable y PVC',
+                    olivas: 'Suaves, sellado acústico óptimo',
+                    longitud: '71cm',
+                    peso: '150g'
+                }
+            },
+            { 
+                id: 11, 
+                name: 'Ventilador mecánico', 
+                category: 'equipos', 
+                code: 'E078', 
+                description: 'Soporte ventilatorio para pacientes críticos',
+                details: {
+                    modos: 'Ventilación controlada por volumen y presión, SIMV, CPAP, BiPAP',
+                    pantalla: 'Táctil de 15 pulgadas',
+                    alarmas: 'Múltiples alarmas configurables de alta y baja prioridad',
+                    bateria: 'Interna de 30 minutos, externa opcional de 4 horas',
+                    software: 'Actualizable, con memoria de tendencias de 72 horas'
+                }
+            },
+            { 
+                id: 12, 
+                name: 'Fisioterapia', 
+                category: 'servicios', 
+                code: 'S089', 
+                description: 'Rehabilitación física para pacientes',
+                details: {
+                    tipos: 'Terapia manual, electroterapia, ultrasonido, láser, ejercicios terapéuticos',
+                    duracion: 'Sesiones de 45-60 minutos',
+                    requisitos: 'Referencia médica especializada',
+                    sesiones: 'Programa personalizado según evaluación (10-20 sesiones)'
+                }
+            }
+        ];
+        
+        // ===== FUNCIONALIDAD DEL SITIO =====
+        
+        // Variables globales
+        let activeCategory = 'todos';
+        let searchTerm = '';
+        
+        // Elementos del DOM
+        const menuToggle = document.getElementById('menuToggle');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const menuIcon = document.getElementById('menuIcon');
+        const searchInput = document.getElementById('searchInput');
+        const categoriesList = document.getElementById('categoriesList');
+        const currentCategory = document.getElementById('currentCategory');
+        const itemCount = document.getElementById('itemCount');
+        const itemsContainer = document.getElementById('itemsContainer');
+        const noResults = document.getElementById('noResults');
+        const clearFilters = document.getElementById('clearFilters');
+        const detailsModal = document.getElementById('detailsModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalContent = document.getElementById('modalContent');
+        const closeModal = document.getElementById('closeModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const currentYear = document.getElementById('currentYear');
+        
+        // Inicializar la aplicación
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configurar año actual en el footer
+            currentYear.textContent = new Date().getFullYear();
+            
+            // Menú móvil toggle
+            menuToggle.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+                menuIcon.classList.toggle('fa-bars');
+                menuIcon.classList.toggle('fa-times');
+            });
+            
+            // Cargar categorías
+            loadCategories();
+            
+            // Configurar búsqueda
+            searchInput.addEventListener('input', function() {
+                searchTerm = this.value.toLowerCase();
+                renderItems();
+            });
+            
+            // Configurar botón de limpiar filtros
+            clearFilters.addEventListener('click', function() {
+                searchInput.value = '';
+                searchTerm = '';
+                setActiveCategory('todos');
+            });
+            
+            // Configurar modal
+            closeModal.addEventListener('click', hideModal);
+            closeModalBtn.addEventListener('click', hideModal);
+            
+            // Cargar items iniciales
+            renderItems();
+        });
+        
+        // Cargar categorías en el sidebar
+        function loadCategories() {
+            categoriesList.innerHTML = '';
+            
+            categories.forEach(category => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <button
+                        class="w-full text-left p-3 rounded flex items-center gap-3 mb-1 transition-all ${
+                            activeCategory === category.id ? 'bg-blue-50 text-blue-600 font-medium' : 'hover:bg-gray-50'
+                        }"
+                        data-category="${category.id}"
+                    >
+                        <i class="fas ${category.icon}"></i>
+                        ${category.name}
+                        ${activeCategory === category.id ? '<i class="fas fa-chevron-right ml-auto"></i>' : ''}
+                    </button>
+                `;
+                
+                li.querySelector('button').addEventListener('click', function() {
+                    const categoryId = this.getAttribute('data-category');
+                    setActiveCategory(categoryId);
+                });
+                
+                categoriesList.appendChild(li);
+            });
+        }
+        
+        // Establecer categoría activa
+        function setActiveCategory(categoryId) {
+            activeCategory = categoryId;
+            loadCategories();
+            renderItems();
+        }
+        
+        // Renderizar items según filtros actuales
+        function renderItems() {
+            // Filtrar items según la categoría y búsqueda
+            const filteredItems = catalogItems.filter(item => {
+                const matchesCategory = activeCategory === 'todos' || item.category === activeCategory;
+                const matchesSearch = searchTerm === '' || 
+                                    item.name.toLowerCase().includes(searchTerm) || 
+                                    item.code.toLowerCase().includes(searchTerm) ||
+                                    item.description.toLowerCase().includes(searchTerm);
+                return matchesCategory && matchesSearch;
+            });
+            
+            // Actualizar contador y categoría actual
+            itemCount.textContent = `${filteredItems.length} artículos`;
+            const categoryName = categories.find(cat => cat.id === activeCategory)?.name || 'Todos los artículos';
+            currentCategory.textContent = categoryName;
+            
+            // Mostrar mensaje si no hay resultados
+            if (filteredItems.length === 0) {
+                itemsContainer.classList.add('hidden');
+                noResults.classList.remove('hidden');
+            } else {
+                itemsContainer.classList.remove('hidden');
+                noResults.classList.add('hidden');
+                
+                // Renderizar items
+                itemsContainer.innerHTML = '';
+                filteredItems.forEach(item => {
+                    const categoryInfo = categories.find(cat => cat.id === item.category);
+                    const itemCard = document.createElement('div');
+                    itemCard.className = 'border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all item-card';
+                    itemCard.innerHTML = `
+                        <div class="flex justify-between items-start">
+                            <h3 class="font-medium text-lg text-blue-600">${item.name}</h3>
+                            <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">${item.code}</span>
+                        </div>
+                        <p class="text-gray-600 mt-2 text-sm">${item.description}</p>
+                        <div class="mt-4 flex justify-between items-center">
+                            <span class="text-xs text-gray-500 flex items-center gap-1">
+                                <i class="fas ${categoryInfo?.icon}"></i> ${categoryInfo?.name}
+                            </span>
+                            <button class="text-blue-600 text-sm hover:underline view-details" data-id="${item.id}">
+                                Ver detalles
+                            </button>
+                        </div>
+                    `;
+                    
+                    itemCard.querySelector('.view-details').addEventListener('click', function() {
+                        const itemId = parseInt(this.getAttribute('data-id'));
+                        showItemDetails(itemId);
+                    });
+                    
+                    itemsContainer.appendChild(itemCard);
+                });
+            }
+        }
+        
+        // Mostrar detalles de un item
+        function showItemDetails(itemId) {
+            const item = catalogItems.find(item => item.id === itemId);
+            if (!item) return;
+            
+            // Configurar título del modal
+            modalTitle.textContent = `${item.name} (${item.code})`;
+            
+            // Configurar contenido del modal
+            modalContent.innerHTML = `
+                <div class="p-4 bg-blue-50 rounded-lg">
+                    <p class="text-gray-700">${item.description}</p>
+                </div>
+                
+                <div class="mt-4">
+                    <h4 class="font-bold mb-2">Detalles del producto</h4>
+                    <dl class="grid grid-cols-1 gap-y-2">
+                        ${Object.entries(item.details).map(([key, value]) => `
+                            <div class="py-2 border-b border-gray-100">
+                                <dt class="font-medium text-sm text-gray-500 capitalize">${key}:</dt>
+                                <dd class="mt-1">${value}</dd>
+                            </div>
+                        `).join('')}
+                    </dl>
+                </div>
+                
+                <div class="mt-4">
+                    <h4 class="font-bold mb-2">Categoría</h4>
+                    <p>${categories.find(cat => cat.id === item.category)?.name || item.category}</p>
+                </div>
+            `;
+            
+            // Mostrar modal
+            detailsModal.classList.remove('hidden');
+        }
+        
+        // Ocultar modal
+        function hideModal() {
+            detailsModal.classList.add('hidden');
+        }
+        
+        // Imprimir catálogo
+        function printCatalog() {
+            window.print();
+        }
+        
+        // Exportar a CSV
+        function exportToCSV() {
+            // Filtrar items según los filtros actuales
+            const filteredItems = catalogItems.filter(item => {
+                const matchesCategory = activeCategory === 'todos' || item.category === activeCategory;
+                const matchesSearch = searchTerm === '' || 
+                                    item.name.toLowerCase().includes(searchTerm) || 
+                                    item.code.toLowerCase().includes(searchTerm) ||
+                                    item.description.toLowerCase().includes(searchTerm);
+                return matchesCategory && matchesSearch;
+            });
+            
+            // Crear contenido CSV
+            let csvContent = 'data:text/csv;charset=utf-8,';
+            
+            // Encabezados
+            csvContent += 'Código,Nombre,Categoría,Descripción\n';
+            
+            // Datos
+            filteredItems.forEach(item => {
+                const categoryName = categories.find(cat => cat.id === item.category)?.name || item.category;
+                csvContent += `${item.code},${item.name.replace(/,/g, ' ')},${categoryName},${item.description.replace(/,/g, ' ')}\n`;
+            });
+            
+            // Crear enlace de descarga
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement('a');
+            link.setAttribute('href', encodedUri);
+            link.setAttribute('download', 'catalogo_institucional.csv');
+            document.body.appendChild(link);
+            
+            // Descargar archivo
+            link.click();
+            
+            // Limpiar
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>
